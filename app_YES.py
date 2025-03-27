@@ -31,25 +31,26 @@ from linebot.v3.webhooks import (
 )
 import os 
 
-app = Flask(__name__)
+app_YES = Flask(__name__)
 
 configuration = Configuration(access_token=os.getenv("CHANNEL_ACCESS_TOKEN"))
 handler = WebhookHandler(os.getenv("CHANNEL_SECRET"))
 
-@app.route("/callback", methods=['POST'])
+
+@app_YES.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
+    app_YES.logger.info("Request body: " + body)
 
     # handle webhook body
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
-        app.logger.info("Invalid signature. Please check your channel access token/channel secret.")
+        app_YES.logger.info("Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
 
     return 'OK'
@@ -83,7 +84,7 @@ def handle_message(event):
         elif text == 'Buttons':
             url = request.url_root + 'static/Logo.jpg'
             url = url.replace("http", "https")
-            app.logger.info("url=" + url)
+            app_YES.logger.info("url=" + url)
             buttons_template = ButtonsTemplate(
                 thumbnail_image_url=url,
                 title='示範',
@@ -112,7 +113,7 @@ def handle_message(event):
         elif text == 'Carousel':
             url = request.url_root + 'static/Logo.jpg'
             url = url.replace("http", "https")
-            app.logger.info("url=" + url)
+            app_YES.logger.info("url=" + url)
             carousel_template = CarouselTemplate(
                 columns=[
                     CarouselColumn(
@@ -155,7 +156,7 @@ def handle_message(event):
         elif text == 'ImageCarousel':
             url = request.url_root + 'static/'
             url = url.replace("http", "https")
-            app.logger.info("url=" + url)
+            app_YES.logger.info("url=" + url)
             image_carousel_template = ImageCarouselTemplate(
                 columns=[
                     ImageCarouselColumn(
@@ -195,4 +196,4 @@ def handle_message(event):
             )
 
 if __name__ == "__main__":
-    app.run()
+    app_YES.run()
