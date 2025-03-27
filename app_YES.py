@@ -29,6 +29,7 @@ from linebot.v3.webhooks import (
     MessageEvent,
     TextMessageContent
 )
+import os 
 
 app = Flask(__name__)
 
